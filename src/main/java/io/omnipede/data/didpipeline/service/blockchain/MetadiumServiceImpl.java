@@ -7,6 +7,7 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Keys;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
+import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.tx.gas.DefaultGasProvider;
 
@@ -60,6 +61,7 @@ class MetadiumServiceImpl implements BlockChainService {
      * from 에서 부터 1000 개를 읽는
      * @param from Event 를 읽어올 block 의 number
      */
+    @Override
     public List<DidIssuanceInfo> getIdentityCreationEventsFrom(long from) {
         long count = 1000;
         return getIdentityCreationEventsFrom(from, count);
@@ -70,6 +72,7 @@ class MetadiumServiceImpl implements BlockChainService {
      * @param from Event 를 읽어올 block 의 number
      * @param count startBlockNumber 로 부터 조회할 block 개수
      */
+    @Override
     public List<DidIssuanceInfo> getIdentityCreationEventsFrom(long from, long count) {
 
         long to = from + count;
@@ -89,6 +92,20 @@ class MetadiumServiceImpl implements BlockChainService {
                     .ein(ein)
                     .build())
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Get latest metadium block
+     * @return Last block of metadium block chain
+     */
+    @Override
+    public Long getLastBlock() {
+        try {
+            EthBlock ethBlock = web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
+            return ethBlock.getBlock().getNumber().longValue();
+        } catch (IOException e) {
+            throw new IllegalStateException("Error while getting last block from metadium", e);
+        }
     }
 
     /**
