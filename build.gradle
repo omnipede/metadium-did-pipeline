@@ -8,6 +8,7 @@ group 'io.omnipede'
 version '0.1.0-SNAPSHOT'
 
 repositories {
+    mavenCentral()
     mavenLocal()
     maven {
         url = 'https://repo.maven.apache.org/maven2'
@@ -16,6 +17,13 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation group: 'org.web3j', name: 'core', version: '5.0.0'
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
