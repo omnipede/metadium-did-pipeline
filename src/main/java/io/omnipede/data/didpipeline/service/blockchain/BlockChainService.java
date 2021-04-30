@@ -6,5 +6,5 @@ public interface BlockChainService {
 
     List<DidIssuanceInfo> getIdentityCreationEventsFrom(long from);
     List<DidIssuanceInfo> getIdentityCreationEventsFrom(long from, long count);
-    Long getLastBlock();
+    Long getLatestBlock();
 }

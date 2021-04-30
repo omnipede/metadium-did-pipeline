@@ -99,7 +99,7 @@ class MetadiumServiceImpl implements BlockChainService {
      * @return Last block of metadium block chain
      */
     @Override
-    public Long getLastBlock() {
+    public Long getLatestBlock() {
         try {
             EthBlock ethBlock = web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
             return ethBlock.getBlock().getNumber().longValue();
