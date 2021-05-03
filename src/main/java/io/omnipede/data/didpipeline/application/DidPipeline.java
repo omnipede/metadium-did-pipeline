@@ -29,25 +29,20 @@ public class DidPipeline {
     }
 
     /**
-     * 스케쥴링을 시작하기 전, data warehouse 에 저장된 마지막 block number 와
-     * block chain 상의 latest block 사이에 생성된 did 발급 정보를 data source 에 새로 저장하는
-     * 동기화 메소드.
+     * Data warehouse 에 저장된 마지막 block number 와
+     * block chain 상의 latest block 사이에 생성된 did 발급 정보를 data source 에 새로 저장하는 동기화 메소드.
      */
     public void sync() {
 
-        // Block chain 에 생성된 가장 최신에 생성된 block
+        // Block chain 에서 가장 최신에 생성된 block
         long latestBlock = blockChainService.getLatestBlock();
 
         // Warehouse 에 저장된 가장 마지막 block
         long lastBlock = dataWarehouseService.findLastBlockNumber()
                 .orElse(0L);
 
-        log.info("Synchronizing from block #{} to block #{} starts", lastBlock, latestBlock);
-
         // Latest block 과 last block 사이에 생성된 did 발급 정보를 조회 후 저장한다
         fetchAndSaveDidIssuanceInfo(lastBlock, latestBlock);
-
-        log.info("Synchronizing from block #{} to block #{} ends", lastBlock, latestBlock);
     }
 
     /**
@@ -59,7 +54,11 @@ public class DidPipeline {
 
         // 한번에 1000 개의 block 을 조사한다
         long lookupCount = 1000L;
-        for (long i = fromBlock; i < toBlock; i += lookupCount) {
+        for (long i = fromBlock; i <= toBlock; i += lookupCount) {
+
+            // 단, i + lookupCount 가 toBlock 을 초과할 경우 lookupCount 값을 조정한다
+            if (i + lookupCount > toBlock)
+                lookupCount = toBlock - i + 1;
 
             // i 번째 블록을 기준으로 lookupCount 만큼의 블록을 조사하며 did 발급 이벤트가 발생했는지 확인한다.
             List<DidIssuanceInfo> didIssuanceInfoList = blockChainService.getIdentityCreationEventsFrom(i, lookupCount);
