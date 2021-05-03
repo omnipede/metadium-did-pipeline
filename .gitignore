@@ -36,4 +36,4 @@ logs/
 
 .gradle
 
-./elasticsearch/
+docker/elasticsearch/
