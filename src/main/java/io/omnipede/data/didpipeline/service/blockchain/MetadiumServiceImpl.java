@@ -75,7 +75,7 @@ class MetadiumServiceImpl implements BlockChainService {
     @Override
     public List<DidIssuanceInfo> getIdentityCreationEventsFrom(long from, long count) {
 
-        long to = from + count;
+        long to = from + count - 1;
 
         // Read events between from ~ to
         List<String> einList = getCreatedEinBetweenBlocks(from, to);
