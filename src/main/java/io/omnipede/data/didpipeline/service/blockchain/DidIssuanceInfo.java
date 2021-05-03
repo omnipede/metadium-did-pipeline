@@ -1,9 +1,6 @@
 package io.omnipede.data.didpipeline.service.blockchain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
@@ -17,14 +14,18 @@ import java.util.Date;
 public class DidIssuanceInfo {
 
     // 발급된 EIN
+    @NonNull
     private String ein;
 
     // 발급 시각 (추정값)
+    @NonNull
     private Date issuedAt;
 
-    //
-    private long from;
+    // DID 발급 정보가 저장된 block 범위의 시작
+    @NonNull
+    private Long from;
 
-    //
-    private long to;
+    // DID 발급 정보가 저장된 block 범위의 끝
+    @NonNull
+    private Long to;
 }

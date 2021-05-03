@@ -80,14 +80,17 @@ class MetadiumServiceImpl implements BlockChainService {
         // Read events between from ~ to
         List<String> einList = getCreatedEinBetweenBlocks(from, to);
 
+        log.info("EIN count from block #{} to block #{}: {}", from, to, einList.size());
+
         // Event 발생 시점을 'to' block 생성 시점으로 추정한다.
-        Date issuedAt = getTimestampOfBlock(to)
+        Date issuedAt = getTimestampOfBlock(from)
                 .orElseThrow(() -> new IllegalStateException("# "+ to + " block does not exists"));
 
         // Convert to issuance information
         return einList.stream().parallel()
                 .map(ein -> DidIssuanceInfo.builder()
                     .from(from)
+                    .to(to)
                     .issuedAt(issuedAt)
                     .ein(ein)
                     .build())
@@ -141,7 +144,7 @@ class MetadiumServiceImpl implements BlockChainService {
     private Optional<Date> getTimestampOfBlock(long blockNumber) {
 
         EthBlock ethBlock = getBlock(blockNumber).orElse(null);
-        if (ethBlock == null)
+        if (ethBlock == null || ethBlock.getBlock() == null)
             return Optional.empty();
 
         // Sec 에서 milli 단위로 변환하기 위해 1000 을 곱한다.
