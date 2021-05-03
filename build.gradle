@@ -17,6 +17,7 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation group: 'org.springframework.data', name: 'spring-data-elasticsearch', version: '4.2.0'
     implementation group: 'org.web3j', name: 'core', version: '5.0.0'
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
 
