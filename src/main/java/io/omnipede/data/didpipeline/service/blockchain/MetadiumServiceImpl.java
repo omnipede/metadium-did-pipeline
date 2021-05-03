@@ -83,7 +83,7 @@ class MetadiumServiceImpl implements BlockChainService {
         log.info("EIN count from block #{} to block #{}: {}", from, to, einList.size());
 
         // Event 발생 시점을 'to' block 생성 시점으로 추정한다.
-        Date issuedAt = getTimestampOfBlock(from)
+        Date issuedAt = getTimestampOfBlock(to)
                 .orElseThrow(() -> new IllegalStateException("# "+ to + " block does not exists"));
 
         // Convert to issuance information

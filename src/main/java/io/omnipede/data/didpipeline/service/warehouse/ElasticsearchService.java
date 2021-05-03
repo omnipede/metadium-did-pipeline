@@ -35,7 +35,7 @@ class ElasticsearchService implements DataWarehouseService {
         List<DidIssuanceDocument> documents = didIssuanceInfoList
                 .stream().parallel().map(didIssuanceInfo -> DidIssuanceDocument.builder()
                     .ein(didIssuanceInfo.getEin())
-                    .blockNumber(didIssuanceInfo.getFrom())
+                    .blockNumber(didIssuanceInfo.getTo())
                     .issuedAt(didIssuanceInfo.getIssuedAt())
                     .createdAt(new Date())
                     .build())
