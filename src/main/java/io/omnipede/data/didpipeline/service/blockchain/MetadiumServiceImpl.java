@@ -80,7 +80,7 @@ class MetadiumServiceImpl implements BlockChainService {
         // Read events between from ~ to
         List<String> einList = getCreatedEinBetweenBlocks(from, to);
 
-        log.info("EIN count from block #{} to block #{}: {}", from, to, einList.size());
+        log.info("# of issued DID between block #{} and block #{}: {}", from, to, einList.size());
 
         // Event 발생 시점을 'to' block 생성 시점으로 추정한다.
         Date issuedAt = getTimestampOfBlock(to)
