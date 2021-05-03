@@ -31,4 +31,9 @@ class DidIssuanceDocument {
     @Field(value = "created_at", type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
     @NonNull
     private Date createdAt;
+
+    // DID 발급 이벤트가 발생한 block 의 number
+    @NonNull
+    @Field(value = "block_number", type = FieldType.Long)
+    private Long blockNumber;
 }
