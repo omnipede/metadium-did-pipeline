@@ -77,24 +77,11 @@ class MetadiumServiceImpl implements BlockChainService {
 
         long to = from + count - 1;
 
-        // Read events between from ~ to
-        List<String> einList = getCreatedEinBetweenBlocks(from, to);
+        List<DidIssuanceInfo> didIssuanceInfoList = getIdentityCreationEventsBetween(from, to);
 
-        log.info("# of issued DID between block #{} and block #{}: {}", from, to, einList.size());
+        log.info("# of issued DID between block #{} and block #{}: {}", from, to, didIssuanceInfoList.size());
 
-        // Event 발생 시점을 'to' block 생성 시점으로 추정한다.
-        Date issuedAt = getTimestampOfBlock(to)
-                .orElseThrow(() -> new IllegalStateException("# "+ to + " block does not exists"));
-
-        // Convert to issuance information
-        return einList.stream().parallel()
-                .map(ein -> DidIssuanceInfo.builder()
-                    .from(from)
-                    .to(to)
-                    .issuedAt(issuedAt)
-                    .ein(ein)
-                    .build())
-                .collect(Collectors.toList());
+        return didIssuanceInfoList;
     }
 
     /**
@@ -112,28 +99,62 @@ class MetadiumServiceImpl implements BlockChainService {
     }
 
     /**
-     * Block 범위 내에서 identity creation event 를 읽어서 생성된 ein 리스트를 반환하는 메소드
-     * @param from 조회 시작 block
-     * @param to 조회 끝 block
-     * @return From ~ to block 범위 내에서 생성된 ein 리스트
+     * Block 범위 내의 did 발급 event 를 읽어서 did 발급 정보 리스트를 반환하는 메소드
+     * @param from Block 범위 시작
+     * @param to Block 범위 끝
+     * @return DID 발급 정보 리스트
      */
-    private List<String> getCreatedEinBetweenBlocks(long from, long to) {
+    private List<DidIssuanceInfo> getIdentityCreationEventsBetween(long from, long to) {
 
-        List<String> einList = new ArrayList<>();
+        List<IdentityRegistry.IdentityCreatedEventResponse> identityCreatedEventResponseList = new ArrayList<>();
+
+        // Read all identity created events from ~ to.
         identityRegistry.identityCreatedEventFlowable(
                 DefaultBlockParameter.valueOf(BigInteger.valueOf(from)),
                 DefaultBlockParameter.valueOf(BigInteger.valueOf(to))
         ).subscribe(identityCreatedEventResponse -> {
-            // Pass if null
-            if (identityCreatedEventResponse == null
-                    || identityCreatedEventResponse.ein == null)
+            // Pass if empty
+            if (identityCreatedEventResponse == null)
                 return;
 
-            // Push EIN
-            einList.add(identityCreatedEventResponse.ein.toString());
+            identityCreatedEventResponseList.add(identityCreatedEventResponse);
         }).dispose();
 
-        return einList;
+        return identityCreatedEventResponseList
+                .stream()
+                .parallel()
+                .map(this::toDidIssuanceInfo)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Block chain event response 객체를 DID 발급 정보 DTO 로 변환하는 메소드
+     * @param response Block chain event response 객체
+     * @return DID 발급 정보 DTO
+     */
+    private Optional<DidIssuanceInfo> toDidIssuanceInfo(IdentityRegistry.IdentityCreatedEventResponse response) {
+
+        if (response == null || response.log == null || response.ein == null)
+            return Optional.empty();
+
+        BigInteger blockNumber = response.log.getBlockNumber();
+        if (blockNumber == null)
+            return Optional.empty();
+
+        long blockNumberLong = blockNumber.longValue();
+        Date issuedAt = getTimestampOfBlock(blockNumberLong)
+                .orElseThrow(() -> new IllegalStateException("# "+ blockNumberLong + " block does not exists"));
+
+        DidIssuanceInfo didIssuanceInfo = DidIssuanceInfo.builder()
+                .ein(response.ein.toString())
+                .issuedAt(issuedAt)
+                .from(blockNumberLong)
+                .to(blockNumberLong)
+                .build();
+
+        return Optional.of(didIssuanceInfo);
     }
 
     /**
