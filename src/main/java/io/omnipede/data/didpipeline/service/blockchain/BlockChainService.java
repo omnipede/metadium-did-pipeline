@@ -4,7 +4,6 @@ import java.util.List;
 
 public interface BlockChainService {
 
-    List<DidIssuanceInfo> getIdentityCreationEventsFrom(long from);
-    List<DidIssuanceInfo> getIdentityCreationEventsFrom(long from, long count);
+    List<DidIssuanceInfo> getIdentityCreationEventsBetween(long from, long to);
     Long getLatestBlock();
 }

@@ -57,34 +57,6 @@ class MetadiumServiceImpl implements BlockChainService {
     }
 
     /**
-     * 특정 metadium block 에서 identity creation event 를 읽어오는 메소드
-     * from 에서 부터 1000 개를 읽는
-     * @param from Event 를 읽어올 block 의 number
-     */
-    @Override
-    public List<DidIssuanceInfo> getIdentityCreationEventsFrom(long from) {
-        long count = 1000;
-        return getIdentityCreationEventsFrom(from, count);
-    }
-
-    /**
-     * 특정 metadium block 에서 identity creation event 를 읽어오는 메소드
-     * @param from Event 를 읽어올 block 의 number
-     * @param count startBlockNumber 로 부터 조회할 block 개수
-     */
-    @Override
-    public List<DidIssuanceInfo> getIdentityCreationEventsFrom(long from, long count) {
-
-        long to = from + count - 1;
-
-        List<DidIssuanceInfo> didIssuanceInfoList = getIdentityCreationEventsBetween(from, to);
-
-        log.info("# of issued DID between block #{} and block #{}: {}", from, to, didIssuanceInfoList.size());
-
-        return didIssuanceInfoList;
-    }
-
-    /**
      * Get latest metadium block
      * @return Last block of metadium block chain
      */
@@ -104,7 +76,8 @@ class MetadiumServiceImpl implements BlockChainService {
      * @param to Block 범위 끝
      * @return DID 발급 정보 리스트
      */
-    private List<DidIssuanceInfo> getIdentityCreationEventsBetween(long from, long to) {
+    @Override
+    public List<DidIssuanceInfo> getIdentityCreationEventsBetween(long from, long to) {
 
         List<IdentityRegistry.IdentityCreatedEventResponse> identityCreatedEventResponseList = new ArrayList<>();
 
@@ -120,6 +93,7 @@ class MetadiumServiceImpl implements BlockChainService {
             identityCreatedEventResponseList.add(identityCreatedEventResponse);
         }).dispose();
 
+        // Convert identity created events to did issuance information
         return identityCreatedEventResponseList
                 .stream()
                 .parallel()
