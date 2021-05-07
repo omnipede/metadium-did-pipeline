@@ -21,11 +21,7 @@ public class DidIssuanceInfo {
     @NonNull
     private Date issuedAt;
 
-    // DID 발급 정보가 저장된 block 범위의 시작
+    // DID 발급 정보가 저장된 block 의 block number
     @NonNull
-    private Long from;
-
-    // DID 발급 정보가 저장된 block 범위의 끝
-    @NonNull
-    private Long to;
+    private Long blockNumber;
 }

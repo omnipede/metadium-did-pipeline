@@ -63,7 +63,7 @@ class MetadiumServiceImpl implements BlockChainService {
             EthBlock ethBlock = web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
             return ethBlock.getBlock().getNumber().longValue();
         } catch (IOException e) {
-            throw new IllegalStateException("Error while getting last block from metadium", e);
+            throw new IllegalStateException("Error while getting latest block from metadium", e);
         }
     }
 
@@ -117,8 +117,7 @@ class MetadiumServiceImpl implements BlockChainService {
         DidIssuanceInfo didIssuanceInfo = DidIssuanceInfo.builder()
                 .ein(response.ein.toString())
                 .issuedAt(issuedAt)
-                .from(blockNumberLong)
-                .to(blockNumberLong)
+                .blockNumber(blockNumberLong)
                 .build();
 
         return Optional.of(didIssuanceInfo);
