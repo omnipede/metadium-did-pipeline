@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-class MetadiumServiceImpl implements BlockChainService {
+class MetadiumService implements BlockChainService {
 
     private final Web3j web3j;
 
@@ -34,7 +34,7 @@ class MetadiumServiceImpl implements BlockChainService {
     private final IdentityRegistry identityRegistry;
 
     @Autowired
-    public MetadiumServiceImpl(Web3j web3j) {
+    public MetadiumService(Web3j web3j) {
         this.web3j = web3j;
         this.identityRegistry = givenIdentityRegistry();
     }

@@ -12,15 +12,15 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 /**
  * Metadium blockchain 관련 API 통합 테스트 코드
  */
-public class MetadiumServiceImplITTest {
+public class MetadiumServiceITTest {
 
-    private static MetadiumServiceImpl metadiumService;
+    private static MetadiumService metadiumService;
 
     @BeforeAll
     public static void setup() {
 
         Web3j web3j = Web3j.build(new HttpService("https://api.metadium.com/prod"));
-        metadiumService = new MetadiumServiceImpl(web3j);
+        metadiumService = new MetadiumService(web3j);
     }
 
     /**
