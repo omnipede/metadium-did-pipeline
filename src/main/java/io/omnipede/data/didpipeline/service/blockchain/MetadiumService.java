@@ -28,29 +28,12 @@ class MetadiumService implements BlockChainService {
 
     private final Web3j web3j;
 
-    // Identity registry 컨트렉트 주소
-    private static final String identityRegistryContractAddress = "0x42bbff659772231bb63c7c175a1021e080a4cf9d";
-
     private final IdentityRegistry identityRegistry;
 
     @Autowired
-    public MetadiumService(Web3j web3j) {
+    public MetadiumService(Web3j web3j, IdentityRegistry identityRegistry) {
         this.web3j = web3j;
-        this.identityRegistry = givenIdentityRegistry();
-    }
-
-    /**
-     * IdentityRegistry contract 의 java wrapper 객체를 생성하는 메소드
-     * @return IdentityRegistry wrapper object
-     */
-    private IdentityRegistry givenIdentityRegistry() {
-        try {
-            // Fee 를 소모하는 contract method 를 호출하지 않기 때문에, dummy credential 을 생성한다.
-            Credentials dummy = Credentials.create(Keys.createEcKeyPair());
-            return IdentityRegistry.load(identityRegistryContractAddress, web3j, dummy, new DefaultGasProvider());
-        } catch (InvalidAlgorithmParameterException | NoSuchProviderException | NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error while creating IdentityRegistry contract", e);
-        }
+        this.identityRegistry = identityRegistry;
     }
 
     /**

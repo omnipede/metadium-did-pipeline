@@ -3,7 +3,6 @@ package io.omnipede.data.didpipeline.service.blockchain;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.http.HttpService;
 
 import java.util.List;
 
@@ -19,8 +18,11 @@ public class MetadiumServiceITTest {
     @BeforeAll
     public static void setup() {
 
-        Web3j web3j = Web3j.build(new HttpService("https://api.metadium.com/prod"));
-        metadiumService = new MetadiumService(web3j);
+        MetadiumConfig metadiumConfig = new MetadiumConfig();
+        Web3j web3j = metadiumConfig.web3j();
+        IdentityRegistry identityRegistry = metadiumConfig.identityRegistry(web3j);
+
+        metadiumService = new MetadiumService(web3j, identityRegistry);
     }
 
     /**
