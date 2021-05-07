@@ -16,10 +16,7 @@ import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -79,19 +76,16 @@ class MetadiumServiceImpl implements BlockChainService {
     @Override
     public List<DidIssuanceInfo> getIdentityCreationEventsBetween(long from, long to) {
 
+        if (from > to)
+            throw new IllegalStateException("Parameter 'from' should be larger than parameter 'to'. 'from': " + from + " 'to': " + to);
+
         List<IdentityRegistry.IdentityCreatedEventResponse> identityCreatedEventResponseList = new ArrayList<>();
 
         // Read all identity created events from ~ to.
         identityRegistry.identityCreatedEventFlowable(
                 DefaultBlockParameter.valueOf(BigInteger.valueOf(from)),
                 DefaultBlockParameter.valueOf(BigInteger.valueOf(to))
-        ).subscribe(identityCreatedEventResponse -> {
-            // Pass if empty
-            if (identityCreatedEventResponse == null)
-                return;
-
-            identityCreatedEventResponseList.add(identityCreatedEventResponse);
-        }).dispose();
+        ).retry(32).subscribe(identityCreatedEventResponseList::add).dispose();
 
         // Convert identity created events to did issuance information
         return identityCreatedEventResponseList
@@ -118,8 +112,7 @@ class MetadiumServiceImpl implements BlockChainService {
             return Optional.empty();
 
         long blockNumberLong = blockNumber.longValue();
-        Date issuedAt = getTimestampOfBlock(blockNumberLong)
-                .orElseThrow(() -> new IllegalStateException("# "+ blockNumberLong + " block does not exists"));
+        Date issuedAt = getTimestampOfBlock(blockNumberLong);
 
         DidIssuanceInfo didIssuanceInfo = DidIssuanceInfo.builder()
                 .ein(response.ein.toString())
@@ -136,32 +129,17 @@ class MetadiumServiceImpl implements BlockChainService {
      * @param blockNumber Metadium block number
      * @return Block 생성 시각 (timestamp millis)
      */
-    private Optional<Date> getTimestampOfBlock(long blockNumber) {
-
-        EthBlock ethBlock = getBlock(blockNumber).orElse(null);
-        if (ethBlock == null || ethBlock.getBlock() == null)
-            return Optional.empty();
-
-        // Sec 에서 milli 단위로 변환하기 위해 1000 을 곱한다.
-        Date createdAt = new Date(ethBlock.getBlock().getTimestamp().longValue() * 1000);
-        return Optional.of(createdAt);
-    }
-
-    /**
-     * Block number 로 block 데이터를 가져오는 메소드
-     * @param blockNumber Block number
-     * @return Metadium block
-     */
-    private Optional<EthBlock> getBlock(long blockNumber) {
+    private Date getTimestampOfBlock(long blockNumber) {
 
         try {
-            EthBlock ethBlock
-                    = web3j.ethGetBlockByNumber(DefaultBlockParameter.valueOf(BigInteger.valueOf(blockNumber)), false).send();
-            if (ethBlock == null)
-                return Optional.empty();
-            return Optional.of(ethBlock);
+            EthBlock ethBlock = web3j.ethGetBlockByNumber(
+                    DefaultBlockParameter.valueOf(BigInteger.valueOf(blockNumber)), false
+            ).send();
+
+            // Sec 에서 milli 단위로 변환하기 위해 1000 을 곱한다.
+            return  new Date(ethBlock.getBlock().getTimestamp().longValue() * 1000);
         } catch (IOException e) {
-            return Optional.empty();
+            throw new IllegalStateException("Exception while getting block number #" + blockNumber, e);
         }
     }
 }
