@@ -18,15 +18,27 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation group: 'org.springframework.data', name: 'spring-data-elasticsearch', version: '4.2.0'
-    implementation group: 'org.web3j', name: 'core', version: '5.0.0'
+    implementation group: 'org.web3j', name: 'core', version: '4.8.4'
+
+    // Web3j 에서 사용하는 okhttp 와 spring 에서 사용하는 okhttp 간에 버전 충돌이 발생하여 직접 okhttp 의존성을 선언함.
+    // 실제 어플리케이션 코드 내에서 참조하고 있지는 않음
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
 
+    // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    // Junit 5
+    testImplementation ('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.2.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
+
+    // Test containers
+    testImplementation group: 'org.testcontainers', name: 'testcontainers', version: '1.15.3'
+    testImplementation group: 'org.testcontainers', name: 'elasticsearch', version: '1.15.3'
+    testImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: '1.15.3'
 }
 
 test {
