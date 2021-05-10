@@ -88,4 +88,15 @@ jacocoTestCoverageVerification {
             }
         }
     }
+
+    afterEvaluate {
+        getClassDirectories().setFrom(
+                files(classDirectories.files.collect {
+                    fileTree(dir: it, exclude: [
+                            // Exclude smart contract wrapper class
+                            '**io/omnipede/data/didpipeline/service/blockchain/IdentityRegistry**'
+                    ])
+                })
+        )
+    }
 }
