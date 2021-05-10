@@ -35,6 +35,9 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.2.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
 
+    // Test mocking framework
+    testImplementation group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
+
     // Test containers
     testImplementation group: 'org.testcontainers', name: 'testcontainers', version: '1.15.3'
     testImplementation group: 'org.testcontainers', name: 'elasticsearch', version: '1.15.3'
