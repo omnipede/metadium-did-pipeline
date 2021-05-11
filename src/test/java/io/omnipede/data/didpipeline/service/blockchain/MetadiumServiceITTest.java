@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.web3j.protocol.Web3j;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -41,6 +42,12 @@ public class MetadiumServiceITTest {
         // Then
         assertThat(didIssuanceInfoList).isNotNull();
         assertThat(didIssuanceInfoList).hasSize(6);
+        assertThat(didIssuanceInfoList).extracting(DidIssuanceInfo::getEin)
+                .containsExactly("28127", "28128", "28129", "28130", "28131", "28132");
+        assertThat(didIssuanceInfoList).extracting(DidIssuanceInfo::getBlockNumber)
+                .containsExactly(10010022L, 10010070L, 10010143L, 10010222L, 10010323L, 10010822L);
+        assertThat(didIssuanceInfoList).extracting(DidIssuanceInfo::getIssuedAt)
+                .containsExactly(new Date(1600172986000L), new Date(1600173151000L), new Date(1600173420000L), new Date(1600173727000L), new Date(1600174095000L), new Date(1600175957000L));
     }
 
     /**
