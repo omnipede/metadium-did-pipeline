@@ -60,7 +60,7 @@ class MetadiumService implements BlockChainService {
     public List<DidIssuanceInfo> getIdentityCreationEventsBetween(long from, long to) {
 
         if (from > to)
-            throw new IllegalStateException("Parameter 'from' should be larger than parameter 'to'. 'from': " + from + " 'to': " + to);
+            throw new IllegalArgumentException("Parameter 'from' should be larger than parameter 'to'. 'from': " + from + " 'to': " + to);
 
         List<IdentityRegistry.IdentityCreatedEventResponse> identityCreatedEventResponseList = new ArrayList<>();
 
