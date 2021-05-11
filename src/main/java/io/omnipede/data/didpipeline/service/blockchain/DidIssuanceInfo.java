@@ -8,8 +8,6 @@ import java.util.Date;
  * DID 발급 정보 DTO
  */
 @Getter
-@AllArgsConstructor
-@Builder
 public class DidIssuanceInfo {
 
     // 발급된 EIN
@@ -23,4 +21,12 @@ public class DidIssuanceInfo {
     // DID 발급 정보가 저장된 block 의 block number
     @NonNull
     private final Long blockNumber;
+
+    @Builder
+    public DidIssuanceInfo(@NonNull String ein, @NonNull Date issuedAt, @NonNull Long blockNumber) {
+
+        this.ein = ein;
+        this.issuedAt = issuedAt;
+        this.blockNumber = blockNumber;
+    }
 }

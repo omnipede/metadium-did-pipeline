@@ -87,7 +87,7 @@ class MetadiumService implements BlockChainService {
      */
     private Optional<DidIssuanceInfo> toDidIssuanceInfo(IdentityRegistry.IdentityCreatedEventResponse response) {
 
-        if (response == null || response.log == null || response.ein == null)
+        if (response.log == null || response.ein == null)
             return Optional.empty();
 
         BigInteger blockNumber = response.log.getBlockNumber();
