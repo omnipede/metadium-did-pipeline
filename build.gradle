@@ -37,7 +37,8 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
 
     // Test mocking framework
-    testImplementation group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.8.0'
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '3.8.0'
 
     // Test containers
     testImplementation group: 'org.testcontainers', name: 'testcontainers', version: '1.15.3'
@@ -91,12 +92,12 @@ jacocoTestCoverageVerification {
 
     afterEvaluate {
         getClassDirectories().setFrom(
-                files(classDirectories.files.collect {
-                    fileTree(dir: it, exclude: [
-                            // Exclude smart contract wrapper class
-                            '**io/omnipede/data/didpipeline/service/blockchain/IdentityRegistry**'
-                    ])
-                })
+            files(classDirectories.files.collect {
+                fileTree(dir: it, exclude: [
+                        // Exclude smart contract wrapper class
+                        '**io/omnipede/data/didpipeline/service/blockchain/IdentityRegistry**'
+                ])
+            })
         )
     }
 }
