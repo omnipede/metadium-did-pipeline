@@ -10,7 +10,6 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.util.Date;
 
 @Getter
-@AllArgsConstructor
 @Builder
 @Document(indexName = "did-issuance")
 class DidIssuanceDocument {
@@ -34,4 +33,12 @@ class DidIssuanceDocument {
     @NonNull
     @Field(value = "block_number", type = FieldType.Long)
     private final Long blockNumber;
+
+    public DidIssuanceDocument(@NonNull String ein, @NonNull Date issuedAt, @NonNull Date createdAt, @NonNull Long blockNumber) {
+
+        this.ein = ein;
+        this.issuedAt = issuedAt;
+        this.createdAt = createdAt;
+        this.blockNumber = blockNumber;
+    }
 }
