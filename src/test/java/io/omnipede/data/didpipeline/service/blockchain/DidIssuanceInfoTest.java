@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
+import static org.junit.Assert.assertThrows;
 
 public class DidIssuanceInfoTest {
 
@@ -51,41 +52,16 @@ public class DidIssuanceInfoTest {
     }
 
     @Test
-    public void should_throw_exception_when_ein_is_null() {
+    public void should_throw_NPtrExc_when_builder_encounters_null_fields() {
 
         // Given
         long blockNumber = 1L;
-        Date issuedAt = new Date();
-
-        // When
-        Throwable throwable = catchThrowable(() -> {
-            DidIssuanceInfo.builder()
-                    .ein(null)
-                    .blockNumber(blockNumber)
-                    .issuedAt(issuedAt)
-                    .build();
-        });
-
-        Throwable another = catchThrowable(() -> {
-            new DidIssuanceInfo(null, issuedAt, blockNumber);
-        });
-
-        // Then
-        assertThat(throwable).isNotNull();
-        assertThat(throwable).isInstanceOf(NullPointerException.class);
-        assertThat(another).isNotNull();
-        assertThat(another).isInstanceOf(NullPointerException.class);
-    }
-
-    @Test
-    public void should_throw_exception_when_blockNumber_is_null() {
-
-        // Given
         String ein = UUID.randomUUID().toString();
         Date issuedAt = new Date();
 
         // When
-        Throwable throwable = catchThrowable(() -> {
+        Throwable blockNumberIsNull = assertThrows(NullPointerException.class, () -> {
+
             DidIssuanceInfo.builder()
                     .ein(ein)
                     .blockNumber(null)
@@ -93,26 +69,17 @@ public class DidIssuanceInfoTest {
                     .build();
         });
 
-        Throwable another = catchThrowable(() -> {
-            new DidIssuanceInfo(ein, issuedAt, null);
+        Throwable einIsNull = assertThrows(NullPointerException.class, () -> {
+
+            DidIssuanceInfo.builder()
+                    .ein(null)
+                    .blockNumber(blockNumber)
+                    .issuedAt(issuedAt)
+                    .build();
         });
 
-        // Then
-        assertThat(throwable).isNotNull();
-        assertThat(throwable).isInstanceOf(NullPointerException.class);
-        assertThat(another).isNotNull();
-        assertThat(another).isInstanceOf(NullPointerException.class);
-    }
+        Throwable issuedAtIsNull = assertThrows(NullPointerException.class, () -> {
 
-    @Test
-    public void should_throw_exception_when_issuedAt_is_null() {
-
-        // Given
-        String ein = UUID.randomUUID().toString();
-        long blockNumber = 123L;
-
-        // When
-        Throwable throwable = catchThrowable(() -> {
             DidIssuanceInfo.builder()
                     .ein(ein)
                     .blockNumber(blockNumber)
@@ -120,15 +87,40 @@ public class DidIssuanceInfoTest {
                     .build();
         });
 
-        Throwable another = catchThrowable(() -> {
+        // Then
+        assertThat(blockNumberIsNull).isInstanceOf(NullPointerException.class);
+        assertThat(einIsNull).isInstanceOf(NullPointerException.class);
+        assertThat(issuedAtIsNull).isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    public void should_throw_NPtrExc_when_constructor_encounters_null_fields() {
+
+        // Given
+        long blockNumber = 1L;
+        String ein = UUID.randomUUID().toString();
+        Date issuedAt = new Date();
+
+        // When
+        Throwable blockNumberIsNull = assertThrows(NullPointerException.class, () -> {
+
+            new DidIssuanceInfo(ein, issuedAt, null);
+        });
+
+        Throwable einIsNull = assertThrows(NullPointerException.class, () -> {
+
+            new DidIssuanceInfo(null, issuedAt, blockNumber);
+        });
+
+        Throwable issuedAtIsNull = assertThrows(NullPointerException.class, () -> {
+
             new DidIssuanceInfo(ein, null, blockNumber);
         });
 
         // Then
-        assertThat(throwable).isNotNull();
-        assertThat(throwable).isInstanceOf(NullPointerException.class);
-        assertThat(another).isNotNull();
-        assertThat(another).isInstanceOf(NullPointerException.class);
+        assertThat(blockNumberIsNull).isInstanceOf(NullPointerException.class);
+        assertThat(einIsNull).isInstanceOf(NullPointerException.class);
+        assertThat(issuedAtIsNull).isInstanceOf(NullPointerException.class);
     }
 
     @Test
