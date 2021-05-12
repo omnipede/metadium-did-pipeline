@@ -22,6 +22,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
  * Elasticsearch CRUD 통합 테스트.
  * Context loading 을 최소화하기 위해 필요한 클래스만 테스트 환경에 올린다.
  */
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @ExtendWith(SpringExtension.class)
 @EnableAutoConfiguration
 @ContextConfiguration(
@@ -44,7 +45,7 @@ public class ElasticsearchServiceITTest extends DockerIntegration {
     }
 
     @Test
-    public void should_find_last_block_number() throws Exception {
+    public void should_find_last_block_number() {
 
         // Given
         DidIssuanceDocument document = DidIssuanceDocument.builder()
@@ -66,7 +67,7 @@ public class ElasticsearchServiceITTest extends DockerIntegration {
     }
 
     @Test
-    public void should_save_did_issuance_list() throws Exception {
+    public void should_save_did_issuance_list() {
 
         // Given
         List<DidIssuanceInfo> didIssuanceInfoList = IntStream.range(0, 100).parallel()
