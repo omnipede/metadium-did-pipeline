@@ -1,0 +1,14 @@
+spring:
+  main:
+    # This program is not web application
+    web-application-type: none
+  # Elasticsearch connection configurations
+  elasticsearch:
+    rest:
+      uris: "http://elasticsearch:9200"
+      username: "elastic"
+      password: "MyPw123"
+
+logging:
+  level:
+    io.omnipede.data.didpipeline: debug

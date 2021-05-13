@@ -3,6 +3,26 @@ networks:
     driver: bridge
 
 services:
+
+  # Pipeline process
+  pipeline:
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    container_name: did-pipeline
+    image: didpipeline:latest
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1024m"
+        max-file: "10"
+    # Start pipeline only when elasticsearch process starts up
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - warehouse
+
   # Elastic search 설정
   elasticsearch:
     container_name: elasticsearch
@@ -21,6 +41,13 @@ services:
       ELASTIC_PASSWORD: "MyPw123"
     networks:
       - warehouse
+    # Elasticsearch http server health check
+    healthcheck:
+      test: ["CMD-SHELL", "curl -X GET http://localhost:9200/_cluster/health || exit 1"]
+      interval: 15s
+      timeout: 15s
+      retries: 10
+
   # Kibana 설정
   kibana:
     container_name: kibana
