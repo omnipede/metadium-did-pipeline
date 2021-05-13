@@ -1,9 +1,11 @@
 # did-pipeline
 
-Metadium block chain 상에 존재하는 DID 발급 기록을 저장소로 옮기는 data pipeline.
+Metadium block chain 상에 존재하는 DID 발급 데이터를 저장소로 옮기는 data pipeline.
+저장소로 옮겨진 DID 발급 데이터를 Kibana 로 시각화하면 다음과 같다.
+
+![스크린샷 2021-05-13 오후 12 00 14](https://user-images.githubusercontent.com/41066039/118071490-da37c180-b3e2-11eb-9705-ba47e4eebd64.png)
 
 ## TODO
-* Add kibana graph screenshot to README.md
 * Kibana discovery 기본 화면 설정하기
 
 ## Data flow
